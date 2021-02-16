@@ -1,8 +1,9 @@
 <template>
   <div class="upload">
-    <h1>upload<div id="fileupload_count"></div></h1>
-    <input type="file" @change="onFileSelected" multiple>
-    <button @click="onUpload">Upload</button>
+    <h1 class="my-10">UPLOAD <div id="fileupload_count"></div></h1>
+    <input type="file" @change="onFileSelected" multiple class="hidden" id="filesinput">
+    <button @click="clickFilesInput" class="mr-10 bg-indigo-700 hover:bg-pink-700 text-white font-bold py-2 px-4 mb-6 rounded"> Select files for upload <div v-if="selectedFiles.length>0">{{selectedFiles.length}} files selected</div></button>
+    <button @click="onUpload" class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded">Upload</button>
   </div>
 </template>
 
@@ -11,7 +12,15 @@ import axios from 'axios';
 export default {
   transition: 'slide-bottom',
   middleware: 'authenticated',
+  data(){
+    return {
+      selectedFiles: []
+    }
+  },
   methods: {
+    clickFilesInput(){
+      document.getElementById('filesinput').click();
+    },
     onFileSelected(event){
       this.selectedFiles = event.target.files;
     },
@@ -51,7 +60,7 @@ export default {
               }
               len.init++;
               lenWait++;
-              count.innerHTML = len.init + ' : ' + len.full + (len.error > 0? ' errors:' + len.error:'') + (len.duplicate > 0? ' duplicates:' + len.duplicate:'');
+              count.innerHTML = 'Uploaded ' + len.init + ' out of ' + len.full + (len.error > 0? ' errors:' + len.error:'') + (len.duplicate > 0? ' duplicates:' + len.duplicate:'');
               if(lenWait >= lenn){
                 console.log('did '+lenn+' : '+ len.init);
                 imageUploadLoopCALL = true;

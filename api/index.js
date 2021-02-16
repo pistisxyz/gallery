@@ -272,7 +272,7 @@ const routes = {
                             sharp(data).resize(200, null, {
                                 fit: sharp.fit.inside,
                                 withoutEnlargement: true
-                            }).toBuffer().then(resizeddata => { 
+                            }).withMetadata().toBuffer().then(resizeddata => { 
                                 fs.writeFile(path.join(uploads_location, 'resized', date_name), resizeddata, (err) => { 
                                     if(err){
                                         console.log(err);
