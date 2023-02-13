@@ -35,18 +35,21 @@
         for(let  i = 0; i < fileList.length; i++){
             let data = new FormData()
             data.append("file", fileList[i]);
-            data.append();
-
-            let result = fetch(PUBLIC_UPLOAD_URL, {
+            // data.append();
+            console.log(i)
+            let result = await fetch(PUBLIC_UPLOAD_URL, {
                 method: 'POST',
-                headers: {
-                    'Authorization': "Bearer " + "$token"
-                },
+                // headers: {
+                //     // 'Authorization': "Bearer " + "$token",
+                //     'Content-Type': 'multipart/form-data'
+                // },
                 body: data
-            }).await
-
-            console.log(result)
-
+            })
+            // if(result.status != 200) {
+            //     console.log("there was an error uploading file:", i);
+            //     console.log(fileList[i]);
+            //     i--;
+            // };
         }
 
         uploading = false; 
