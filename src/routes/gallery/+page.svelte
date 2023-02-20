@@ -12,6 +12,7 @@
     }
     
     function showImage(url){
+        alert("BOMBA")
         console.log(url)
     }
     // onMount(async () => {
@@ -27,9 +28,9 @@
 </script>
 
 <div class="bg-gray-900 select-none min-h-screen w-screen">
-        <div class="flex justify-center">
-            <div class="mb-3 md:w-full">
-              <input
+    <div class="flex justify-center">
+        <div class="mb-3 md:w-full">
+            <input
                 type="search"
                 class="
                   form-control
@@ -50,9 +51,9 @@
                 "
                 id="exampleSearch"
                 placeholder="Type query"
-              />
-            </div>
+            />
         </div>
+    </div>
     <section class="overflow-hidden text-gray-700 ">
         <div class="container px-5 py-2 mx-auto lg:pt-12 lg:px-32">
             <div class="flex flex-wrap -m-1 md:-m-2">
@@ -63,7 +64,7 @@
                     >
                         <div class="w-full p-1 md:p-2">
                             <img class="block object-cover object-center w-full h-full rounded-lg
-                            hover:scale-110 transition duration-200 ease-in-out"
+                            hover:scale-110 transition duration-200 ease-in-out cursor-pointer unselectable"
                             loading="lazy"
                             alt={image.alt}
                             src={image.src}>
@@ -74,3 +75,14 @@
         </div>
     </section>
 </div>
+
+<style>
+    .unselectable {
+        user-drag: none; 
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-drag: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+</style>
