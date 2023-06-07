@@ -2,13 +2,16 @@
 // @ts-nocheck
 
     import piko from '$lib/images/pikologo.svg';
-    import userPlaceholder from '$lib/images/userPlaceholder.png'
+    import ProfileIcon from '$lib/icons/ProfileIcon.svelte';
+    import { goto } from '$app/navigation';
 
     import { fly } from 'svelte/transition';
 
+    import store from '$lib/stores/store'
+
+    let loggedIn = store.get('auth')
 
     let mobileMenu = false;
-    let loggedIn = true;
     let ProfileMenu = false;
 
 	function toggleMobile() {
@@ -17,7 +20,13 @@
 
     function signout() {
         toggleProfile();
-        loggedIn = !loggedIn
+        store.set('auth', false)
+        fetch("/login?/logout", {
+            method: 'POST',
+            body: new FormData()
+        })
+
+        goto("/login");
     }
 
     function toggleProfile(){
@@ -52,7 +61,7 @@
           <div class="hidden sm:block sm:ml-6 pt-1 ">
             <div class="flex space-x-4">
                 <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                {#if loggedIn}
+                {#if $loggedIn}
                     <a href="/gallery"  class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Gallery</a>
                     <a href="/upload"   class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Upload</a>
                 {:else}
@@ -70,10 +79,10 @@
           </button>
           <div class="ml-3 relative">
             <div>
-                {#if loggedIn }
+                {#if $loggedIn }
                     <button on:click={toggleProfile} class="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu" aria-haspopup="true">
                         <span class="sr-only">Open user menu</span>
-                        <p class="h-8 w-8 rounded-full">💀</p>
+                        <ProfileIcon width="1.4em" color="text-gray-400 hover:text-white"/>
                     </button>
                 {/if}
             </div>
@@ -94,7 +103,7 @@
             <div on:click={toggleMobile} on:keydown class="sm:hidden ease-linear">
                 <div class="px-2 pt-2 pb-3 space-y-1">
                     <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
-                    {#if loggedIn }
+                    {#if $loggedIn }
                         <a href="/gallery" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Gallery</a>
                         <a href="/upload" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Upload</a>
                     {:else}

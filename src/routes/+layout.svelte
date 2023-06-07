@@ -1,8 +1,9 @@
 <script>    
     import '../styles/tailwind.css';
-    import piko from '$lib/images/pikologo.svg';
     import Header from './header.svelte';
-    import BGsharan from'$lib/images/sharan.svg';
+
+    import Toasts from "$lib/components/Toasts.svelte";
+
 </script>
 
 <style>
@@ -13,6 +14,8 @@
         background-size: cover;
     }
 </style>
+
+<Toasts />
 
 <Header />
 
