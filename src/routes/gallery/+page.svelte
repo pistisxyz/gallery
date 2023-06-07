@@ -4,7 +4,6 @@
     import { PUBLIC_GALLERY_BACKEND_URL } from '$env/static/public';
     import cookies from "$lib/cookies.js"
     import { onMount } from 'svelte';
-    import { writable } from "svelte/store";
     import { addToast } from "$lib/stores/toastStore";
 
     //images
@@ -37,6 +36,7 @@
             for(let img of data.Images){
                 let name = img.Path.split("/").pop().split(".").shift();
                 images.push({
+                    type: img.Type,
                     source: img.Path,
                     alt: "",
                     src: `${PUBLIC_GALLERY_BACKEND_URL}/compressed/${name}.webp`
@@ -91,17 +91,18 @@
             if (!data.Images) return images = []
 
             allCount = data.Count
-            let temp = [];
+            images = [];
             for (let img of data.Images) {
                 let name = img.Path.split("/").pop().split(".").shift();
-                temp.push({
+                images.push({
+                    type: img.Type,
                     source: img.Path,
                     alt: "",
                     src: `${PUBLIC_GALLERY_BACKEND_URL}/compressed/${name}.webp`
                 })
             }
 
-            images = temp
+            images = images
         } catch (e) {
             addToast({
                 message: "there was an error getting one or more of the images!",
@@ -118,14 +119,16 @@
         get_tags()
     })
     
-    function showImage(url){
-        overlay_content = `${PUBLIC_GALLERY_BACKEND_URL}/image/${url.split("/").pop()}`
-        console.log(url)
-        overlay.set(true)
+    function showImage(img){
+        overlay_content = {
+            type: img.type,
+            source: `${PUBLIC_GALLERY_BACKEND_URL}/image/${img.source.split("/").pop()}`
+        }
+        overlay = true
     }
 
     function hideImage(){
-        overlay.set(false)
+        overlay = false
     }
 
     function add_tag({ key }) {
@@ -178,27 +181,30 @@
     function to_page(p){
         page = p;
         images = [];
-        console.log(page, tags.length)
         if(tags.length > 0) search_images()
         else {
-            page = 1
             get_images()
         }
     }
 
-    let overlay = writable(false);
-    let overlay_content = "url"
+    let overlay = false;
+    let overlay_content = {}
 
     $: pageTabulation = Array(Math.min(Math.ceil(allCount / pageLimit), 20))
 </script>
 <div class="bg-gray-900 select-none min-h-screen w-screen">
-    {#if $overlay}
+    {#if overlay}
         <div
             on:click={() => hideImage()}
             on:keypress
             class="bigImage bg-gray-900/75" >
             <div class="text-neutral-700 dark:text-neutral-200 m-auto bg-gray-900/95 p-10 rounded-lg">
-                <img src={overlay_content} alt="big overview of selected item" class="max-h-[80vh]">
+                {#if overlay_content.type == "image"}
+                    <img src={overlay_content.source} alt="big overview of selected item" class="max-h-[80vh]">
+                {:else if overlay_content.type == "video"}
+                    <!-- svelte-ignore a11y-media-has-caption -->
+                    <video controls src={overlay_content.source} class="max-h-[80vh]"></video>
+                {/if}
             </div>
         </div>
     {/if}
@@ -251,7 +257,7 @@
                 {/if}
                 {#each images as image}
                     <div class="flex flex-wrap 2xl:w-1/6 xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/2 w-full"
-                        on:click={_=>showImage(image.source)}
+                        on:click={_=>showImage(image)}
                         on:keypress
                     >
                         <div class="w-full p-1 md:p-2">
@@ -266,7 +272,6 @@
                 {/each}
             </div>
             <div class="w-fit text-white my-4 m-auto flex"> 
-                <!-- TODO: MAKE WORK WITH PAGES AND TAGS -->
                 {#each pageTabulation as _, i }
                     <div class="{(i+1==page?"bg-indigo-700":"bg-indigo-500")} cursor-pointer text-white hover:bg-indigo-700 hover:text-white block px-4 py-2 mx-1 rounded-md text-base font-medium w-fit"
                         on:keypress on:click={()=>{to_page(i+1)}}>
