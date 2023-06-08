@@ -113,7 +113,7 @@
 <div class="items-center h-[calc(100vh-300px)]">
     <div id="container" class="mt-16 m-auto bg-netural-300 w-96 p-6 shadow-lg rounded-md border border-neutral-400 border-dashed hover:border-neutral-200 text-center">
         <label class="text-center block mb-2 text-base text-indigo-500 font-semibold" for="uploadarea">{textbox}</label>
-        <input class="mt-2 w-full bg-white rounded-md" type="file" id="uploadarea" multiple accept="image/*"  bind:this={fileInput} on:change={move_handle}/>
+        <input class="mt-2 w-full bg-white rounded-md" type="file" id="uploadarea" multiple accept="image/*,video/*" bind:this={fileInput} on:change={move_handle}/>
         
         <label class="text-left block mt-2 text-base text-indigo-500 font-semibold w-full" for="tags">TAGS</label>
         <input bind:value={tagInput} id="tags" class="float-left mt-2 mb-2 p-1 bg-white w-3/4 text-base text-indigo-500 font-semibold rounded-md hover:bg-neutral-200" type="text" on:keypress={(e)=>{ if (e.key == 'Enter') add_tag()}}>

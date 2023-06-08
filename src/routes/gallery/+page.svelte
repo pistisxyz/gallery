@@ -32,7 +32,7 @@
 
             let data = await result.json();
             allCount = data.Count
-
+            images = [];
             for(let img of data.Images){
                 let name = img.Path.split("/").pop().split(".").shift();
                 images.push({
@@ -180,7 +180,6 @@
 
     function to_page(p){
         page = p;
-        images = [];
         if(tags.length > 0) search_images()
         else {
             get_images()
