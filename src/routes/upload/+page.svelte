@@ -44,7 +44,7 @@
         if(uploading) return addToast({
             message: "you can't start 2 uploading streams at the same time!",
             type: "error",
-            timeout: 2000
+            timeout: 2_000
         })
 
 
@@ -52,7 +52,7 @@
         uploading = true;
 
         let length = fileList.length;
-
+        textbox = `0/${length}`;
         for(let  i = 0; i < length; i++){
             let data = new FormData()
             data.append("file", fileList[i]);
@@ -75,7 +75,7 @@
                     message: "one or more images had an error while uploading!",
                     type: "error",
                     dismissible: true,
-                    timeout: 5*1000 // n*second
+                    timeout: 5_000
                 })
                 console.log('Error:', error);
             }
@@ -91,7 +91,7 @@
 
         addToast({
             message: `finished uploading ${length} files!`,
-            timeout: 2*1000 // n*second
+            timeout: 2_000
         })
 
         textbox = "Choose or Drop photos";
