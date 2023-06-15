@@ -70,7 +70,7 @@
         </div>
         
         <div class="mt-12 flex flex-col justify-center">
-            <p class="text-gray-600 text-center font-semibold lg:px-16">beta 1.73</p>
+            <p class="text-gray-600 text-center font-semibold lg:px-16">version 0.75 beta</p>
             <button class="text-indigo-500 py-2 px-4  font-medium mt-4 Sh ow more ebuttyon">
 
         </div>

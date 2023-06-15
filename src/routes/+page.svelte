@@ -1,5 +1,5 @@
 <script>
-    let version = "version 0.73 beta"
+    let version = "version 0.75 beta"
 </script>
 
 <div class="text-gray-400 h-screen bg-white">

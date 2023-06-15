@@ -8,8 +8,18 @@
     import { fly } from 'svelte/transition';
 
     import store from '$lib/stores/store'
+    import { onMount } from 'svelte';
+    import { getCookie } from '$lib/cookies.js'
 
     let loggedIn = store.get('auth')
+
+    onMount(async () => {
+        if(loggedIn){
+            if (getCookie("token") == "") {
+                loggedIn.set(false)
+            }
+        }
+	});
 
     let mobileMenu = false;
     let ProfileMenu = false;
