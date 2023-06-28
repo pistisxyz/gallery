@@ -184,14 +184,17 @@
         else {
             get_images()
         }
+        topbox.scrollIntoView()
     }
 
     let overlay = false;
     let overlay_content = {}
+    let topbox;
 
     $: pageTabulation = Array(Math.min(Math.ceil(allCount / pageLimit), 20))
 </script>
 <div class="bg-gray-900 select-none min-h-screen w-screen">
+    <div bind:this={topbox}></div>
     {#if overlay}
         <div
             on:click={() => hideImage()}
@@ -227,7 +230,7 @@
                     <div class="center relative inline-block select-none whitespace-nowrap rounded-md bg-indigo-800 py-2 m-1 px-3.5 align-baseline font-sans text-xs font-bold uppercase leading-none text-white">
                         <div class="flex mt-px">
                             <div class="h-fit m-auto pl-1"> {tag} </div>
-                            <div role="button" class="h-5 w-5 p-1" on:click={_=>remove_tag(i)} on:keypress>
+                            <div role="button" tabindex="0" class="h-5 w-5 p-1" on:click={_=>remove_tag(i)} on:keypress>
                                 <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"

@@ -124,7 +124,7 @@
                 <div class="h-fit m-auto pl-1">
                     {tag} 
                 </div>
-                <div role="button" class="h-5 w-5 p-1" on:click={_=>remove_tag(i)} on:keypress>
+                <div role="button" tabindex="0" class="h-5 w-5 p-1" on:click={_=>remove_tag(i)} on:keypress>
                     <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
