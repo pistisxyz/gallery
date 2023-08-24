@@ -4,7 +4,8 @@
   import { PUBLIC_GALLERY_BACKEND_URL } from "$env/static/public";
   import cookies from "$lib/cookies.js";
   import { addToast } from "$lib/stores/toastStore";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
+  import { browser } from '$app/environment';
 
   let emit = createEventDispatcher<{ tag: string[] }>();
   let input = "";
@@ -13,22 +14,24 @@
   let matchingTags = [] as string[];
   let searchSugestions = false;
 
-  (async function get_tags() {
-    try {
-      let response = await fetch(PUBLIC_GALLERY_BACKEND_URL + "/search", {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + cookies.get("token"),
-        },
-      });
-
-      let data = (await response.json()) as Tag[];
-      if (!data) return;
-      allTags = data.map((v) => v.tag_name);
-    } catch (e) {
-      console.error(e);
+  onMount(async () => {
+    if (browser) {
+        try {
+        let response = await fetch(PUBLIC_GALLERY_BACKEND_URL + "/search", {
+            method: "GET",
+            headers: {
+            Authorization: "Bearer " + cookies.get("token"),
+            },
+        });
+    
+        let data = (await response.json()) as Tag[];
+        if (!data) return;
+        allTags = data.map((v) => v.tag_name);
+        } catch (e) {
+        console.error(e);
+        }
     }
-  })();
+  })
 
   function add_tag({ key }: KeyboardEvent) {
     if (key == "Enter") {
