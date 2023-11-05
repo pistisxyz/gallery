@@ -110,7 +110,7 @@
 
     {#if mobileMenu}
         <div transition:fly="{{ y: -20, duration: 400}}">
-            <div on:click={toggleMobile} on:keydown class="sm:hidden ease-linear">
+            <button on:click={toggleMobile} class="sm:hidden ease-linear">
                 <div class="px-2 pt-2 pb-3 space-y-1">
                     <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
                     {#if $loggedIn }
@@ -120,7 +120,7 @@
                         <a href="/login" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Sign In</a>
                     {/if}
                 </div>
-            </div>
+            </button>
         </div>
     {/if}
 </nav>

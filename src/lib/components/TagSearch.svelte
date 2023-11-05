@@ -107,10 +107,9 @@
           >
             {#each matchingTags as item}
               <li
-                on:click={(_) => add_tag_sugestion(item)}
-                on:keydown
                 class="pl-8 pr-2 py-1 border-b-2 border-gray-700 relative cursor-pointer hover:bg-gray-600 hover:text-gray-900"
               >
+              <button class="w-full h-full" on:click={(_) => add_tag_sugestion(item)}>
                 <svg
                   class="absolute w-4 h-4 left-2 top-2"
                   xmlns="http://www.w3.org/2000/svg"
@@ -124,6 +123,7 @@
                   />
                 </svg>
                 {item}
+              </button>
               </li>
             {/each}
           </ul>

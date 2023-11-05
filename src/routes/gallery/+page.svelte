@@ -11,7 +11,8 @@
 
     //pages
     let page = 1;
-    let pageLimit = 25;
+    let pageLimit = 25; // items per page
+    let pageTabulationLimit = 10+1; // max tabulation +1 for the current page
 
     // tags
     let tags = [];
@@ -138,15 +139,26 @@
     let overlay_content = {};
     let topbox;
 
-    $: pageTabulation = Array(Math.min(Math.ceil(allCount / pageLimit), 20));
+    function createNumberArray(startingNumber, length, maxNumber) {
+        const halfLength = Math.floor(length / 2);
+        const numberArray = [];
+
+        for (let i = -halfLength; i <= halfLength; i++) {
+            const num = startingNumber + i;
+            if( num <= maxNumber ) numberArray.push(Math.min(maxNumber, num));
+        }
+        console.log(numberArray)
+        return numberArray;
+    }
+
+    $: pageTabulation = createNumberArray(198, pageTabulationLimit, Math.ceil(allCount / pageLimit));
 </script>
 
 <div class="bg-gray-900 select-none min-h-screen w-screen">
     <div bind:this={topbox} />
     {#if overlay}
-        <div
+        <button
             on:click={() => hideImage()}
-            on:keypress
             class="bigImage bg-gray-900/75"
         >
             <div
@@ -167,7 +179,7 @@
                     />
                 {/if}
             </div>
-        </div>
+        </button>
     {/if}
     <TagSearch on:tag={update_tags} />
     <section class="overflow-hidden text-gray-700">
@@ -179,10 +191,9 @@
                     </div>
                 {/if}
                 {#each images as image}
-                    <div
+                    <button
                         class="flex flex-wrap 2xl:w-1/6 xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/2 w-full"
                         on:click={(_) => showImage(image)}
-                        on:keypress
                     >
                         <div class="w-full p-1 md:p-2">
                             <img
@@ -194,22 +205,21 @@
                                 src={image.src}
                             />
                         </div>
-                    </div>
+                    </button>
                 {/each}
             </div>
             <div class="w-fit text-white my-4 m-auto flex">
-                {#each pageTabulation as _, i}
-                    <div
-                        class="{i + 1 == page
+                {#each pageTabulation as pageNumber}
+                    <button
+                        class="{pageNumber == page
                             ? 'bg-indigo-700'
                             : 'bg-indigo-500'} cursor-pointer text-white hover:bg-indigo-700 hover:text-white block px-4 py-2 mx-1 rounded-md text-base font-medium w-fit"
-                        on:keypress
                         on:click={() => {
-                            to_page(i + 1);
+                            to_page(pageNumber);
                         }}
                     >
-                        {i + 1}
-                    </div>
+                        {pageNumber}
+                    </button>
                 {/each}
             </div>
         </div>
