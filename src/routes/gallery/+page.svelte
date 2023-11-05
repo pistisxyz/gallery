@@ -147,11 +147,10 @@
             const num = startingNumber + i;
             if( num <= maxNumber ) numberArray.push(Math.min(maxNumber, num));
         }
-        console.log(numberArray)
         return numberArray;
     }
 
-    $: pageTabulation = createNumberArray(198, pageTabulationLimit, Math.ceil(allCount / pageLimit));
+    $: pageTabulation = createNumberArray(page, pageTabulationLimit, Math.ceil(allCount / pageLimit));
 </script>
 
 <div class="bg-gray-900 select-none min-h-screen w-screen">
