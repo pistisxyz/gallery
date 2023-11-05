@@ -145,7 +145,7 @@
 
         for (let i = -halfLength; i <= halfLength; i++) {
             const num = startingNumber + i;
-            if( num <= maxNumber ) numberArray.push(Math.min(maxNumber, num));
+            if(0 > num <= maxNumber  ) numberArray.push(Math.min(maxNumber, num));
         }
         return numberArray;
     }
