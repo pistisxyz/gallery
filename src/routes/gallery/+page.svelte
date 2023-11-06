@@ -11,8 +11,8 @@
 
     //pages
     let page = 1;
-    let pageLimit = 25; // items per page
-    let pageTabulationLimit = 10+1; // max tabulation +1 for the current page
+    let pageLimit = 50; // items per page
+    let pageTabulationLimit = 8+1; // max tabulation +1 for the current page
 
     // tags
     let tags = [];
@@ -142,11 +142,12 @@
     function createNumberArray(startingNumber, length, maxNumber) {
         const halfLength = Math.floor(length / 2);
         const numberArray = [];
-
+        numberArray.push(1)
         for (let i = -halfLength; i <= halfLength; i++) {
             const num = startingNumber + i;
-            if(num <= maxNumber && num > 0 ) numberArray.push(Math.min(maxNumber, num));
+            if(num < maxNumber && num > 1 ) numberArray.push(Math.min(maxNumber, num));
         }
+        numberArray.push(maxNumber)
         return numberArray;
     }
 
