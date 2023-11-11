@@ -98,7 +98,7 @@
                         searchSugestions = true;
                     }}
                     on:blur={() => {
-                        setTimeout(() => (searchSugestions = false), 100);
+                        setTimeout(() => (searchSugestions = false), 200);
                     }}
                     id="tags"
                     class="mt-2 mb-2 p-1 dark:bg-gray-700 bg-white w-full text-base text-indigo-500 font-semibold rounded-md outline-none dark:hover:bg-gray-800 hover:bg-neutral-200"
@@ -114,7 +114,7 @@
                             >
                                 <button
                                     class="w-full h-full"
-                                    on:click={(_) => add_tag_sugestion(item)}
+                                    on:mousedown={(_) => add_tag_sugestion(item)}
                                 >
                                     <svg
                                         class="absolute w-4 h-4 left-2 top-2"

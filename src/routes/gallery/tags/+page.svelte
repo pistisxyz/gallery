@@ -53,12 +53,12 @@
                 >
                     <div class="w-fit m-auto p-1 md:p-2 hover:scale-110 transition duration-200 ease-in-out cursor-pointer unselectable select-none">
                         <img
-                            class="block object-cover object-center h-3/4 rounded-lg"
+                            class="block object-cover object-center w-full rounded-lg"
                             loading="lazy"
                             alt={tag.tag_name}
                             src={tag.image_path}
                         />
-                        <div class="w-fit m-auto">{tag.tag_name}</div>
+                        <div class="my-5 text-center w-full">{tag.tag_name}</div>
                     </div>
                 </button>
             {/each}

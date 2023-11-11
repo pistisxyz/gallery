@@ -168,7 +168,21 @@
     {/if}
     <TagSearch on:tag={update_tags} />
     <section class="overflow-hidden text-gray-700">
-        <div class="container px-5 py-2 mx-auto lg:pt-12 lg:px-32">
+        <div class="container px-10 py-2 mx-auto lg:pt-12 lg:px-32">
+            <div class="w-fit text-white my-4 m-auto flex lg:hidden">
+                {#each pageTabulation as pageNumber}
+                    <button
+                        class="{pageNumber == page
+                            ? 'bg-indigo-700'
+                            : 'bg-indigo-500'} cursor-pointer text-white hover:bg-indigo-700 hover:text-white block px-2 py-1 md:px-4 md:py-2 mx-1 rounded-md text-base font-medium w-fit"
+                        on:click={() => {
+                            to_page(pageNumber);
+                        }}
+                    >
+                        {pageNumber}
+                    </button>
+                {/each}
+            </div>
             <div class="flex flex-wrap -m-1 md:-m-2">
                 {#if images.length == 0}
                     <div class="text-white m-auto w-fit">
@@ -177,7 +191,7 @@
                 {/if}
                 {#each images as image}
                     <button
-                        class="flex flex-wrap 2xl:w-1/6 xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/2 w-full"
+                        class="flex flex-wrap 2xl:w-1/6 xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/2 w-full mt-5"
                         on:click={(_) => showImage(image)}
                     >
                         <div class="w-full p-1 md:p-2">
