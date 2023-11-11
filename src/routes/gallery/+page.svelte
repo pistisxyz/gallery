@@ -4,6 +4,8 @@
     import { onMount } from "svelte";
     import { addToast } from "$lib/stores/toastStore";
     import TagSearch from "$lib/components/TagSearch.svelte";
+    import { page as pageStore } from "$app/stores";
+    import { goto } from "$app/navigation";
 
     //images
     let images = [];
@@ -12,63 +14,41 @@
     //pages
     let page = 1;
     let pageLimit = 50; // items per page
-    let pageTabulationLimit = 8+1; // max tabulation +1 for the current page
+    let pageTabulationLimit = 8 + 1; // max tabulation +1 for the current page
 
     // tags
     let tags = [];
 
-    async function get_images() {
+    async function load_images() {
         try {
-            let result = await fetch(
-                PUBLIC_GALLERY_BACKEND_URL +
-                    `/images?page=${page}&limit=${pageLimit}`,
-                {
-                    method: "GET",
-                    headers: {
-                        Authorization: "Bearer " + cookies.get("token"),
-                    },
-                }
-            );
-
-            let data = await result.json();
-            allCount = data.Count;
-            images = [];
-            for (let img of data.Images) {
-                let name = img.Path.split("/").pop().split(".").shift();
-                images.push({
-                    type: img.Type,
-                    source: img.Path,
-                    alt: "",
-                    src: `${PUBLIC_GALLERY_BACKEND_URL}/compressed/${name}.webp`,
-                });
+            let response;
+            if (tags.length > 0) {
+                let form = new FormData();
+                form.append("tags", JSON.stringify(tags));
+                form.append("page", page);
+                form.append("limit", pageLimit);
+                response = await fetch(
+                    PUBLIC_GALLERY_BACKEND_URL + "/search",
+                    {
+                        method: "POST",
+                        headers: {
+                            Authorization: "Bearer " + cookies.get("token"),
+                        },
+                        body: form,
+                    }
+                );
+            } else {
+                response = await fetch(
+                    PUBLIC_GALLERY_BACKEND_URL +
+                        `/images?page=${page}&limit=${pageLimit}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: "Bearer " + cookies.get("token"),
+                        },
+                    }
+                );
             }
-
-            images = images;
-        } catch (error) {
-            addToast({
-                message:
-                    "there was an error getting one or more of the images!",
-                type: "error",
-                dismissible: true,
-                timeout: 2000,
-            });
-            console.log("Error:", error);
-        }
-    }
-
-    async function search_images() {
-        try {
-            let form = new FormData();
-            form.append("tags", JSON.stringify(tags));
-            form.append("page", page);
-            form.append("limit", pageLimit);
-            let response = await fetch(PUBLIC_GALLERY_BACKEND_URL + "/search", {
-                method: "POST",
-                headers: {
-                    Authorization: "Bearer " + cookies.get("token"),
-                },
-                body: form,
-            });
 
             let data = await response.json();
             if (!data.Images) return (images = []);
@@ -99,7 +79,9 @@
     }
 
     onMount(async () => {
-        get_images();
+        if ($pageStore.url.searchParams.has("searchTags"))
+            tags = $pageStore.url.searchParams.get("searchTags").split(",");
+        load_images();
     });
 
     function showImage(img) {
@@ -119,19 +101,14 @@
     function update_tags({ detail: _tags }) {
         page = 1;
         tags = _tags;
-        if (tags.length > 0) {
-            search_images();
-        } else {
-            get_images();
-        }
+        $pageStore.url.searchParams.set('searchTags',tags.join(",")); 
+        goto(`?${$pageStore.url.searchParams.toString()}`)
+        load_images();
     }
 
     function to_page(p) {
         page = p;
-        if (tags.length > 0) search_images();
-        else {
-            get_images();
-        }
+        load_images();
         topbox.scrollIntoView();
     }
 
@@ -142,25 +119,27 @@
     function createNumberArray(startingNumber, length, maxNumber) {
         const halfLength = Math.floor(length / 2);
         const numberArray = [];
-        numberArray.push(1)
+        numberArray.push(1);
         for (let i = -halfLength; i <= halfLength; i++) {
             const num = startingNumber + i;
-            if(num < maxNumber && num > 1 ) numberArray.push(Math.min(maxNumber, num));
+            if (num < maxNumber && num > 1)
+                numberArray.push(Math.min(maxNumber, num));
         }
-        numberArray.push(maxNumber)
-        return numberArray;
+        numberArray.push(maxNumber);
+        return new Set(numberArray);
     }
 
-    $: pageTabulation = createNumberArray(page, pageTabulationLimit, Math.ceil(allCount / pageLimit));
+    $: pageTabulation = createNumberArray(
+        page,
+        pageTabulationLimit,
+        Math.ceil(allCount / pageLimit)
+    );
 </script>
 
 <div class="bg-gray-900 select-none min-h-screen w-screen">
     <div bind:this={topbox} />
     {#if overlay}
-        <button
-            on:click={() => hideImage()}
-            class="bigImage bg-gray-900/75"
-        >
+        <button on:click={() => hideImage()} class="bigImage bg-gray-900/75">
             <div
                 class="text-neutral-700 dark:text-neutral-200 m-auto bg-gray-900/95 p-10 rounded-lg"
             >
