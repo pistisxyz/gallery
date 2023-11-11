@@ -118,8 +118,8 @@
 
     function createNumberArray(startingNumber, length, maxNumber) {
         const halfLength = Math.floor(length / 2);
-        const numberArray = [];
-        numberArray.push(1);
+        const numberArray = [1];
+        if (allCount <= pageLimit) return numberArray; 
         for (let i = -halfLength; i <= halfLength; i++) {
             const num = startingNumber + i;
             if (num < maxNumber && num > 1)
@@ -192,7 +192,7 @@
                     <button
                         class="{pageNumber == page
                             ? 'bg-indigo-700'
-                            : 'bg-indigo-500'} cursor-pointer text-white hover:bg-indigo-700 hover:text-white block px-4 py-2 mx-1 rounded-md text-base font-medium w-fit"
+                            : 'bg-indigo-500'} cursor-pointer text-white hover:bg-indigo-700 hover:text-white block px-2 py-1 md:px-4 md:py-2 mx-1 rounded-md text-base font-medium w-fit"
                         on:click={() => {
                             to_page(pageNumber);
                         }}
