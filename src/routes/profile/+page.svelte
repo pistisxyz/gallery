@@ -4,8 +4,11 @@
     import cookies from "$lib/cookies.js"
 
     import { addToast } from "$lib/stores/toastStore";
-    
-    $: username = "~"
+
+    $: user = {
+        username: '~',
+        totalUploads: '0'
+    }
 
     async function get_profile_data(){
         try {
@@ -17,10 +20,11 @@
             })
 
             let data = await result.json();
-            username = data.Username;
+            user.username = data.Username;
+            user.totalUploads = data.TotalUploads
         } catch (error) {
             addToast({
-                message: "there was an error getting one or more of the images!",
+                message: "there was an error getting your profile information!",
                 type: "error",
                 dismissible: true,
                 timeout: 1*2000 // n*second
@@ -39,7 +43,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3">
             <div class="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
                 <div>
-                    <p class="font-bold text-gray-700 text-xl">0</p>
+                    <p class="font-bold text-gray-700 text-xl">{user.totalUploads}</p>
                     <p class="text-gray-400">Uploads</p>
                 </div>
                 <div>
@@ -63,12 +67,12 @@
                 <button class="text-white py-2 px-4 uppercase rounded bg-gray-700 hover:bg-gray-800 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5">EDIT PROFILE (not working in beta)</button>
             </div>                                      
         </div>
-     
+
         <div class="mt-20 text-center border-b pb-12">
-            <h1 class="text-4xl font-medium text-gray-700">{username}</h1>
+            <h1 class="text-4xl font-medium text-gray-700">Hello {user.username}</h1>
             <p class="font-light text-gray-600 mt-3">Joined on:💀</p>
         </div>
-        
+
         <div class="mt-12 flex flex-col justify-center">
             <p class="text-gray-600 text-center font-semibold lg:px-16">version 0.75 beta</p>
             <button class="text-indigo-500 py-2 px-4  font-medium mt-4 Sh ow more ebuttyon">

@@ -57,12 +57,15 @@
             images = [];
             for (let img of data.Images) {
                 let name = img.Path.split("/").pop().split(".").shift();
-                images.push({
+                if(img.Metadata)console.log(img.Metadata)
+                let nImg =  {
                     type: img.Type,
                     source: img.Path,
+                    metadata: img.Metadata,
                     alt: "",
                     src: `${PUBLIC_GALLERY_BACKEND_URL}/compressed/${name}.webp`,
-                });
+                }
+                images.push(nImg);
             }
 
             images = images;
@@ -89,9 +92,8 @@
     function showImage(img) {
         overlay_content = {
             type: img.type,
-            source: `${PUBLIC_GALLERY_BACKEND_URL}/image/${img.source
-                .split("/")
-                .pop()}`,
+            source: `${PUBLIC_GALLERY_BACKEND_URL}/image/${img.source.split("/").pop()}`,
+            metadata: img.metadata
         };
         overlay = true;
     }
@@ -145,9 +147,9 @@
 <div class="bg-gray-900 select-none min-h-screen w-screen">
     <div bind:this={topbox} />
     {#if overlay}
-        <button on:click={() => hideImage()} class="bigImage bg-gray-900/75">
+        <button on:click={() => hideImage()} class="bigImage bg-gray-900/75 h-screen w-screen">
             <div
-                class="text-neutral-700 dark:text-neutral-200 m-auto bg-gray-900/95 p-10 rounded-lg"
+                class="text-neutral-700 dark:text-neutral-200 m-auto bg-gray-900/95 p-10 rounded-lg flex {overlay_content.metadata? "xl:w-4/5 xl:h-4/5": "" }"
             >
                 {#if overlay_content.type == "image"}
                     <img
@@ -162,6 +164,11 @@
                         src={overlay_content.source}
                         class="max-h-[80vh]"
                     />
+                {/if}
+                {#if overlay_content.metadata}
+                    <div class="whitespace-pre-wrap text-left max-h-full overflow-scroll ml-5 w-fit hidden xl:block">
+                        {overlay_content.metadata}
+                    </div>
                 {/if}
             </div>
         </button>
@@ -231,8 +238,6 @@
         top: 0;
         left: 0;
         right: 0;
-        width: 100%;
-        height: 100%;
         display: flex;
         justify-content: center;
         flex-direction: column;
