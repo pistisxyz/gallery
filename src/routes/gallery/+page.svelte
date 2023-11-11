@@ -79,6 +79,8 @@
     }
 
     onMount(async () => {
+        if ($pageStore.url.searchParams.has("page")) 
+            page = $pageStore.url.searchParams.get("page")
         if ($pageStore.url.searchParams.has("searchTags"))
             tags = $pageStore.url.searchParams.get("searchTags").split(",");
         load_images();
@@ -108,6 +110,10 @@
 
     function to_page(p) {
         page = p;
+
+        $pageStore.url.searchParams.set('page', page); 
+        goto(`?${$pageStore.url.searchParams.toString()}`)
+
         load_images();
         topbox.scrollIntoView();
     }
