@@ -34,9 +34,9 @@
         fetch("/login?/logout", {
             method: 'POST',
             body: new FormData()
+        }).then(()=>{
+          goto("/login");
         })
-
-        goto("/login");
     }
 
     function toggleProfile(){

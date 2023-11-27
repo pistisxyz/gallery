@@ -2,9 +2,17 @@ import { fail } from '@sveltejs/kit';
 
 import { PRIVATE_AUTH_LOGIN_URL } from '$env/static/private';
 
+import { redirect } from "@sveltejs/kit"
+export async function load({ cookies }) {
+  let token = cookies.get("token")
+  
+  if(token) throw redirect(302, '/');
+}
+
 export const actions = {
     logout: async ({ cookies, request }) => {
         await cookies.delete('token', {path: '/'});
+        redirect(302, '/login')
     },
     login: async ({ cookies, request }) => {
 
