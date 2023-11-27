@@ -1,5 +1,6 @@
 /**
  * @param {string} cookiename
+ * @return {string}
  */
 export function getCookie(cookiename) {
     // Get name followed by anything except a semicolon
