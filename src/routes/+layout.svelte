@@ -4,6 +4,7 @@
 
     import Toasts from "$lib/components/Toasts.svelte";
 
+    export let data;
 </script>
 
 <style>
@@ -14,9 +15,8 @@
         background-size: cover;
     }
 </style>
-
 <Toasts />
 
-<Header />
+<Header loggedin={data.loggedin}/>
 
 <slot></slot>

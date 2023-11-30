@@ -35,11 +35,26 @@
             }
         }
     });
+    const regex = /(image_name|user):\s*(?:"([^"]*)"|([^ ]+))/g;
 
     function add_tag({ key }: KeyboardEvent) {
         if (key == "Enter") {
             let tag = input.toLowerCase();
-            if (tag.length > 2) {
+            let match = regex.exec(tag)
+            if(match){ // TODO: MAKE BACKEND WORK
+              let matches: Object[] = []
+              function add_match(m: RegExpExecArray){
+                const [, type, quotedValue, nonQuotedValue] = m;
+                const value = quotedValue !== undefined ? quotedValue : nonQuotedValue;
+                matches.push({ type, value });
+              }
+              add_match(match)
+              while ((match = regex.exec(tag)) !== null) {
+                add_match(match)
+              }
+
+              console.log(matches)
+            } else if (tag.length > 2) {
                 if (!allTags.includes(tag))
                     return addToast({
                         message: "no tag with that name!",

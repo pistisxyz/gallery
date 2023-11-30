@@ -7,6 +7,9 @@
     import { page as pageStore } from "$app/stores";
     import { goto } from "$app/navigation";
 
+	  import { clickOutside } from '$lib/clickOutside.js';
+  	import { browser } from "$app/environment";
+
     //images
     let images = [];
     let allCount = 0;
@@ -57,7 +60,7 @@
             images = [];
             for (let img of data.Images) {
                 let name = img.Path.split("/").pop().split(".").shift();
-                if(img.Metadata)console.log(img.Metadata)
+                // if(img.Metadata)console.log(img.Metadata)
                 let nImg =  {
                     type: img.Type,
                     source: img.Path,
@@ -100,6 +103,8 @@
 
     function hideImage() {
         overlay = false;
+        overlay_store = null;
+        overlay_content = null;
     }
 
     function update_tags({ detail: _tags }) {
@@ -122,6 +127,7 @@
 
     let overlay = false;
     let overlay_content = {};
+	  let overlay_store = null;
     let topbox;
 
     function createNumberArray(startingNumber, length, maxNumber) {
@@ -142,40 +148,73 @@
         pageTabulationLimit,
         Math.ceil(allCount / pageLimit)
     );
+
+	  $: if(browser) document.getElementsByTagName("html")[0].classList[overlay?"add":"remove"]("lock-scroll")
 </script>
 
 <div class="bg-gray-900 select-none min-h-screen w-screen">
     <div bind:this={topbox} />
     {#if overlay}
-        <button on:click={() => hideImage()} class="bigImage bg-gray-900/75 h-screen w-screen">
+        <div class="bigImage bg-gray-900/75 h-screen w-screen">
             <div
-                class="text-neutral-700 dark:text-neutral-200 m-auto bg-gray-900/95 p-10 rounded-lg flex {overlay_content.metadata? "xl:w-4/5 xl:h-4/5": "" }"
+				        use:clickOutside on:click_outside={hideImage}
+                class="text-neutral-700 dark:text-neutral-200 m-auto bg-gray-900/95 p-10 rounded-lg flex max-h-[95vh] pt-5"
             >
-                {#if overlay_content.type == "image"}
-                    <img
-                        src={overlay_content.source}
-                        alt="big overview of selected item"
-                        class="max-h-[80vh]"
-                    />
-                {:else if overlay_content.type == "video"}
-                    <!-- svelte-ignore a11y-media-has-caption -->
-                    <video
-                        controls
-                        src={overlay_content.source}
-                        class="max-h-[80vh]"
-                    />
-                {/if}
-                {#if overlay_content.metadata}
-                    <div class="whitespace-pre-wrap text-left max-h-full overflow-scroll ml-5 w-fit hidden xl:block">
-                        {overlay_content.metadata}
-                    </div>
-                {/if}
+                <div class="max-h-full cursor-pointer m-auto">
+					{#if overlay_content.metadata}
+						<button on:click={(button)=>{
+							if(overlay_store) { 
+								overlay_content = overlay_store
+								overlay_store = null;
+							} else {
+								overlay_store = overlay_content;
+								overlay_content = {
+									type: "metadata",
+									metadata: overlay_content.metadata
+								}
+							}
+
+							button.target.textContent = (overlay_content.type == "metadata")? "View Image":"View Metadata";
+
+						}} class="content-normal pb-5">
+							View Metadata
+					</button>
+					<div class="float-right">
+            <!-- TODO: add functionality -->
+						<button on:click={hideImage} class="mr-5 px-2 py-1 bg-red-600">
+							Delete
+						</button>
+						<button on:click={hideImage} cla>
+							Close
+						</button>
+					</div>
+					{/if}
+                    {#if overlay_content.type == "image"}
+                        <img
+                            src={overlay_content.source}
+                            alt="big overview of selected item"
+                            class="max-h-[75vh]"
+                        />
+                    {:else if overlay_content.type == "video"}
+                        <!-- svelte-ignore a11y-media-has-caption -->
+                        <video
+                            controls
+                            src={overlay_content.source}
+                            class="max-h-[75vh]"
+                        />
+                    {:else if overlay_content.type == "metadata"}
+                      <div class="whitespace-pre-wrap text-left max-h-[75vh] overflow-scroll ml-5 w-fit">
+                          {overlay_content.metadata}
+                      </div>
+                    {/if}
+                </div>
             </div>
-        </button>
+        </div>
     {/if}
     <TagSearch on:tag={update_tags} />
-    <section class="overflow-hidden text-gray-700">
+    <section class="text-gray-700">
         <div class="container px-10 py-2 mx-auto lg:pt-12 lg:px-32">
+			<!-- tabulation for mobile -->
             <div class="w-fit text-white my-4 m-auto flex lg:hidden">
                 {#each pageTabulation as pageNumber}
                     <button
@@ -190,6 +229,7 @@
                     </button>
                 {/each}
             </div>
+			<!-- images -->
             <div class="flex flex-wrap -m-1 md:-m-2">
                 {#if images.length == 0}
                     <div class="text-white m-auto w-fit">
@@ -198,12 +238,12 @@
                 {/if}
                 {#each images as image}
                     <button
-                        class="flex flex-wrap 2xl:w-1/6 xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/2 w-full mt-5"
+                        class="flex flex-wrap 2xl:w-1/6 xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/2 w-full"
                         on:click={(_) => showImage(image)}
                     >
                         <div class="w-full p-1 md:p-2">
                             <img
-                                class="block object-cover object-center w-full h-full rounded-lg
+                                class="block object-cover xl:object-contain object-center w-full h-full rounded-lg 
                             hover:scale-110 transition duration-200 ease-in-out cursor-pointer unselectable select-none"
                                 loading="lazy"
                                 source={image.source}
@@ -214,6 +254,7 @@
                     </button>
                 {/each}
             </div>
+			<!-- tabulation -->
             <div class="w-fit text-white my-4 m-auto flex">
                 {#each pageTabulation as pageNumber}
                     <button

@@ -10,8 +10,9 @@
     import store from '$lib/stores/store'
     import { onMount } from 'svelte';
     import { getCookie } from '$lib/cookies.js'
-
-    let loggedIn = store.get('auth')
+    export let loggedin;
+    
+    let loggedIn = store.set('auth', loggedin)
 
     onMount(async () => {
         if(loggedIn){
@@ -42,7 +43,6 @@
     function toggleProfile(){
         ProfileMenu= !ProfileMenu
     }
-
 </script>
 
 
