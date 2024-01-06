@@ -133,8 +133,9 @@
           timeout: 5_000, // n*second
         });
       } else {
+        let message = await response.text();
         addToast({
-          message: "error deleting images!",
+          message,
           type: "error",
           dismissible: true,
           timeout: 5_000, // n*second
