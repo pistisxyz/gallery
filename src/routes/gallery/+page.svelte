@@ -95,7 +95,7 @@
     function showImage(img) {
         overlay_content = {
             type: img.type,
-            source: `${PUBLIC_GALLERY_BACKEND_URL}/image/${img.source.split("/").pop()}`,
+            source: `${PUBLIC_GALLERY_BACKEND_URL}/file/${img.source.split("/").pop()}`,
             metadata: img.metadata
         };
         overlay = true;
@@ -105,6 +105,43 @@
         overlay = false;
         overlay_store = null;
         overlay_content = null;
+    }
+
+    function deleteImage(){
+      // hideImage();
+
+      overlay_store = overlay_content;
+      overlay_content = {
+        type: "confirmation",
+        data: "you sure about that"
+      }
+    }
+
+    async function deleteImageConfirm(){
+      let response = await fetch(PUBLIC_GALLERY_BACKEND_URL + `/images?page=${page}&limit=${pageLimit}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + cookies.get("token"),
+          },
+          body: "uploaded/"+overlay_store.source
+        }
+      );
+
+      if(response.ok){
+        addToast({
+          message: "deleted one or more images",
+          type: "success",
+          dismissible: true,
+          imeout: 5_000, // n*second
+        });
+      } else {
+        addToast({
+          message: "error deleting images!",
+          type: "error",
+          dismissible: true,
+          imeout: 5_000, // n*second
+        });
+      }
     }
 
     function update_tags({ detail: _tags }) {
@@ -178,35 +215,41 @@
 
 						}} class="content-normal pb-5">
 							View Metadata
-					</button>
-					<div class="float-right">
-            <!-- TODO: add functionality -->
-						<button on:click={hideImage} class="mr-5 px-2 py-1 bg-red-600">
-							Delete
-						</button>
-						<button on:click={hideImage} cla>
-							Close
-						</button>
-					</div>
+            </button>
+            <div class="float-right">
+              <button on:click={deleteImage} class="mr-5 px-2 py-1 bg-red-600">
+                Delete
+              </button>
+              <button on:click={hideImage}>
+                Close
+              </button>
+            </div>
 					{/if}
-                    {#if overlay_content.type == "image"}
-                        <img
-                            src={overlay_content.source}
-                            alt="big overview of selected item"
-                            class="max-h-[75vh]"
-                        />
-                    {:else if overlay_content.type == "video"}
-                        <!-- svelte-ignore a11y-media-has-caption -->
-                        <video
+              {#if overlay_content.type == "image"}
+                  <img
+                      src={overlay_content.source}
+                      alt="big overview of selected item"
+                      class="max-h-[75vh]"
+                  />
+                  {:else if overlay_content.type == "video"}
+                  <!-- svelte-ignore a11y-media-has-caption -->
+                  <video
                             controls
                             src={overlay_content.source}
                             class="max-h-[75vh]"
                         />
-                    {:else if overlay_content.type == "metadata"}
-                      <div class="whitespace-pre-wrap text-left max-h-[75vh] overflow-scroll ml-5 w-fit">
-                          {overlay_content.metadata}
-                      </div>
-                    {/if}
+              {:else if overlay_content.type == "metadata"}
+                  <div class="whitespace-pre-wrap text-left max-h-[75vh] overflow-scroll ml-5 w-fit">
+                      {overlay_content.metadata}
+                  </div>
+                {:else if overlay_content.type == "confirmation"}
+                  <div class="">
+                      {overlay_content.data}
+
+                      <button on:click={deleteImageConfirm}>Yes</button>
+                      <button on:click={hideImage}>No</button>
+                  </div>
+                {/if}
                 </div>
             </div>
         </div>
@@ -230,7 +273,7 @@
                 {/each}
             </div>
 			<!-- images -->
-            <div class="flex flex-wrap -m-1 md:-m-2">
+            <div class="columns-1 lg:columns-4 md:columns-3 sm:columns-2 -m-1 md:-m-2">
                 {#if images.length == 0}
                     <div class="text-white m-auto w-fit">
                         No images found 💩
@@ -238,7 +281,7 @@
                 {/if}
                 {#each images as image}
                     <button
-                        class="flex flex-wrap 2xl:w-1/6 xl:w-1/5 lg:w-1/4 md:w-1/3 sm:w-1/2 w-full"
+                        class="flex flex-wrap w-full"
                         on:click={(_) => showImage(image)}
                     >
                         <div class="w-full p-1 md:p-2">

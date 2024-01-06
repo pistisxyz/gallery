@@ -7,6 +7,7 @@
 
     import { fly } from 'svelte/transition';
 
+	  import { clickOutside } from '$lib/clickOutside.js';
     import store from '$lib/stores/store'
     import { onMount } from 'svelte';
     import { getCookie } from '$lib/cookies.js'
@@ -73,6 +74,7 @@
                 <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
                 {#if $loggedIn}
                     <a href="/gallery"  class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Gallery</a>
+                    <a href="/notes"  class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Notes</a>
                     <a href="/upload"   class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Upload</a>
                 {:else}
                     <a href="/login"    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Sign In</a>
@@ -97,7 +99,7 @@
                 {/if}
             </div>
             {#if ProfileMenu}
-                <div class="origin-top-right absolute right-0 mt-2 w-48 z-10 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
+                <div use:clickOutside on:click_outside={toggleProfile} class="origin-top-right absolute right-0 mt-2 w-48 z-10 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="user-menu">
                  <a on:click={toggleProfile} href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Your Profile</a>
                  <a on:click={signout} href="#logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a>
                 </div>
@@ -107,7 +109,6 @@
       </div>
     </div>
 
-
     {#if mobileMenu}
         <div transition:fly="{{ y: -20, duration: 400}}">
             <button on:click={toggleMobile} class="sm:hidden ease-linear">
@@ -115,6 +116,7 @@
                     <a href="/" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Home</a>
                     {#if $loggedIn }
                         <a href="/gallery" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Gallery</a>
+                        <a href="/notes" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Notes</a>
                         <a href="/upload" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Upload</a>
                     {:else}
                         <a href="/login" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Sign In</a>

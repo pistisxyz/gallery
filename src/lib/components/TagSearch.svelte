@@ -35,6 +35,7 @@
             }
         }
     });
+
     const regex = /(image_name|user):\s*(?:"([^"]*)"|([^ ]+))/g;
 
     function add_tag({ key }: KeyboardEvent) {
