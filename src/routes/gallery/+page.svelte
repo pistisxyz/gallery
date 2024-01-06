@@ -108,8 +108,6 @@
     }
 
     function deleteImage(){
-      // hideImage();
-
       overlay_store = overlay_content;
       overlay_content = {
         type: "confirmation",
@@ -118,12 +116,12 @@
     }
 
     async function deleteImageConfirm(){
-      let response = await fetch(PUBLIC_GALLERY_BACKEND_URL + `/images?page=${page}&limit=${pageLimit}`, {
+      let response = await fetch(PUBLIC_GALLERY_BACKEND_URL + `/images`, {
           method: "DELETE",
           headers: {
             Authorization: "Bearer " + cookies.get("token"),
           },
-          body: "uploaded/"+overlay_store.source
+          body: "uploaded/"+overlay_store.source.split("/file/")[1]
         }
       );
 
@@ -132,16 +130,17 @@
           message: "deleted one or more images",
           type: "success",
           dismissible: true,
-          imeout: 5_000, // n*second
+          timeout: 5_000, // n*second
         });
       } else {
         addToast({
           message: "error deleting images!",
           type: "error",
           dismissible: true,
-          imeout: 5_000, // n*second
+          timeout: 5_000, // n*second
         });
       }
+      hideImage();
     }
 
     function update_tags({ detail: _tags }) {
